@@ -1,0 +1,732 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Getting started with cameo &#8212; cameo 0.11.3 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.11.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+    <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started-with-cameo">
+<h1>Getting started with cameo<a class="headerlink" href="#getting-started-with-cameo" title="Permalink to this headline">¶</a></h1>
+<p><strong>cameo</strong> reuses and extends model data structures defined by
+<a class="reference external" href="https://opencobra.github.io/cobrapy/">cobrapy</a>
+(<strong>CO</strong>nstraints-<strong>B</strong>ased <strong>R</strong>econstruction and <strong>A</strong>nalysis
+tool for <strong>Py</strong>thon). So, in addition to following this quick start
+guide and other <strong>cameo</strong> tutorials, we encourage you to explore
+cobrapy’s
+<a class="reference external" href="https://cobrapy.readthedocs.org/en/latest/cobra.core.html">documentation</a>
+as well.</p>
+<div class="section" id="step-1-load-a-model">
+<h2>Step 1: Load a model<a class="headerlink" href="#step-1-load-a-model" title="Permalink to this headline">¶</a></h2>
+<p>Loading a model is easy. Just import the <code class="xref any docutils literal"><span class="pre">~cameo.io.load_model</span></code>
+function.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">load_model</span>
+</pre></div>
+</div>
+<p>For example, load the most current genome-scale metabolic reconstruction
+of <em>Escherichia coli</em>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;iJO1366&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Models, reactions, metabolites, etc., provide return HTML when evaluated
+in Jupyter notebooks and can thus be easily inspected.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span>
+</pre></div>
+</div>
+<table>
+    <tr>
+        <td><strong>Name</strong></td>
+        <td>iJO1366</td>
+    </tr><tr>
+        <td><strong>Memory address</strong></td>
+        <td>0x0115c8ceb8</td>
+    </tr><tr>
+        <td><strong>Number of metabolites</strong></td>
+        <td>1805</td>
+    </tr><tr>
+        <td><strong>Number of reactions</strong></td>
+        <td>2583</td>
+    </tr><tr>
+        <td><strong>Objective expression</strong></td>
+        <td>-1.0*BIOMASS_Ec_iJO1366_core_53p95M_reverse_5c8b1 + 1.0*BIOMASS_Ec_iJO1366_core_53p95M</td>
+    </tr><tr>
+        <td><strong>Compartments</strong></td>
+        <td>periplasm, cytosol, extracellular space</td>
+    </tr>
+  </table></div>
+<div class="section" id="step-2-simulate-a-model">
+<h2>Step 2: Simulate a model<a class="headerlink" href="#step-2-simulate-a-model" title="Permalink to this headline">¶</a></h2>
+<p>The model can be simulated by executing
+<code class="xref any docutils literal"><span class="pre">~cameo.core.solver_based_model.SolverBasedModel.solve</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A quick overview of the solution can be obtained in form of a pandas
+<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>
+(all solution objects in cameo provide access to data frames through a
+<a class="reference internal" href="apidoc_output/cameo.core.html#cameo.core.pathway.Pathway.data_frame" title="cameo.core.pathway.Pathway.data_frame"><code class="xref any py py-attr docutils literal"><span class="pre">data_frame</span></code></a> attribute).</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">solution</span>
+</pre></div>
+</div>
+<h3>Optimal solution with objective value 0.982</h3><br><div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fluxes</th>
+      <th>reduced_costs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>DM_4crsol_c</th>
+      <td>2.1907e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_5drib_c</th>
+      <td>2.2103e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_aacald_c</th>
+      <td>-0.0000e+00</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_amob_c</th>
+      <td>1.9647e-06</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_mththf_c</th>
+      <td>4.4010e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>ZN2abcpp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0083</td>
+    </tr>
+    <tr>
+      <th>ZN2t3pp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0021</td>
+    </tr>
+    <tr>
+      <th>ZN2tpp</th>
+      <td>3.3499e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>ZNabcpp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0083</td>
+    </tr>
+    <tr>
+      <th>Zn2tex</th>
+      <td>3.3499e-04</td>
+      <td>-0.0000</td>
+    </tr>
+  </tbody>
+</table>
+<p>2583 rows × 2 columns</p>
+</div><p>A data frame representation of the solution is accessible via
+<code class="xref any docutils literal"><span class="pre">solution.to_frame()</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">solution</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fluxes</th>
+      <th>reduced_costs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>DM_4crsol_c</th>
+      <td>2.1907e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_5drib_c</th>
+      <td>2.2103e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_aacald_c</th>
+      <td>-0.0000e+00</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_amob_c</th>
+      <td>1.9647e-06</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>DM_mththf_c</th>
+      <td>4.4010e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>ZN2abcpp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0083</td>
+    </tr>
+    <tr>
+      <th>ZN2t3pp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0021</td>
+    </tr>
+    <tr>
+      <th>ZN2tpp</th>
+      <td>3.3499e-04</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>ZNabcpp</th>
+      <td>0.0000e+00</td>
+      <td>-0.0083</td>
+    </tr>
+    <tr>
+      <th>Zn2tex</th>
+      <td>3.3499e-04</td>
+      <td>-0.0000</td>
+    </tr>
+  </tbody>
+</table>
+<p>2583 rows × 2 columns</p>
+</div><p>Data frames make it very easy to process results. For example, let’s
+take a look at reactions with flux != 0</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">solution</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;fluxes != 0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fluxes</th>
+      <th>reduced_costs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>DM_4crsol_c</th>
+      <td>2.1907e-04</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>DM_5drib_c</th>
+      <td>2.2103e-04</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>DM_amob_c</th>
+      <td>1.9647e-06</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>DM_mththf_c</th>
+      <td>4.4010e-04</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>BIOMASS_Ec_iJO1366_core_53p95M</th>
+      <td>9.8237e-01</td>
+      <td>1.8492e-15</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>UPPDC1</th>
+      <td>2.1907e-04</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>USHD</th>
+      <td>1.9113e-02</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>VALTA</th>
+      <td>-4.1570e-01</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>ZN2tpp</th>
+      <td>3.3499e-04</td>
+      <td>0.0000e+00</td>
+    </tr>
+    <tr>
+      <th>Zn2tex</th>
+      <td>3.3499e-04</td>
+      <td>-0.0000e+00</td>
+    </tr>
+  </tbody>
+</table>
+<p>437 rows × 2 columns</p>
+</div></div>
+<div class="section" id="step-3-exploring-a-model">
+<h2>Step 3: Exploring a model<a class="headerlink" href="#step-3-exploring-a-model" title="Permalink to this headline">¶</a></h2>
+<p>Objects—models, reactions, metabolites, genes—can easily be explored in
+the Jupyter notebook, taking advantage of tab completion. For example,
+place your cursor after the period in <code class="xref any docutils literal"><span class="pre">model.reactions.</span></code> and press the
+TAB key. A dialog will appear that allows you to navigate the list of
+reactions encoded in the model.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGK</span> <span class="c1"># delete PGK, place your cursor after the period and press the TAB key.</span>
+</pre></div>
+</div>
+<table>
+    <tr>
+        <td><strong>Reaction identifier</strong></td><td>PGK</td>
+    </tr><tr>
+        <td><strong>Name</strong></td><td>Phosphoglycerate kinase</td>
+    </tr><tr>
+        <td><strong>Stoichiometry</strong></td>
+        <td>
+            <p style='text-align:right'>3pg_c + atp_c <=> 13dpg_c + adp_c</p>
+            <p style='text-align:right'>3-Phospho-D-glycerate + ATP <=> 3-Phospho-D-glyceroyl phosphate + ADP</p>
+        </td>
+    </tr><tr>
+        <td><strong>GPR</strong></td><td>b2926</td>
+    </tr><tr>
+        <td><strong>Lower bound</strong></td><td>-1000.0</td>
+    </tr><tr>
+        <td><strong>Upper bound</strong></td><td>1000.0</td>
+    </tr>
+</table><p>For example, you can access the E4PD (<em>Erythrose 4-phosphate
+dehydrogenase</em>) reaction in the model.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">E4PD</span>
+</pre></div>
+</div>
+<table>
+    <tr>
+        <td><strong>Reaction identifier</strong></td><td>E4PD</td>
+    </tr><tr>
+        <td><strong>Name</strong></td><td>Erythrose 4-phosphate dehydrogenase</td>
+    </tr><tr>
+        <td><strong>Stoichiometry</strong></td>
+        <td>
+            <p style='text-align:right'>e4p_c + h2o_c + nad_c <=> 4per_c + 2.0 h_c + nadh_c</p>
+            <p style='text-align:right'>D-Erythrose 4-phosphate + H2O + Nicotinamide adenine dinucleotide <=> 4-Phospho-D-erythronate + 2.0 H+ + Nicotinamide adenine dinucleotide - reduced</p>
+        </td>
+    </tr><tr>
+        <td><strong>GPR</strong></td><td>b2927 or b1779</td>
+    </tr><tr>
+        <td><strong>Lower bound</strong></td><td>-1000.0</td>
+    </tr><tr>
+        <td><strong>Upper bound</strong></td><td>1000.0</td>
+    </tr>
+</table><p>Be aware though that due variable naming restrictions in Python dot
+notation access to reactions (and other objects) might not work in some
+cases.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="c1"># model.reactions.12DGR120tipp  # uncommenting and running this cell will produce a syntax error</span>
+</pre></div>
+</div>
+<p>In these cases you need to use the <code class="xref any docutils literal"><span class="pre">model.reactions.get_by_id</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s1">&#39;12DGR120tipp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table>
+    <tr>
+        <td><strong>Reaction identifier</strong></td><td>12DGR120tipp</td>
+    </tr><tr>
+        <td><strong>Name</strong></td><td>1,2 diacylglycerol transport via flipping (periplasm to cytoplasm, n-C12:0)</td>
+    </tr><tr>
+        <td><strong>Stoichiometry</strong></td>
+        <td>
+            <p style='text-align:right'>12dgr120_p --> 12dgr120_c</p>
+            <p style='text-align:right'>1,2-Diacyl-sn-glycerol (didodecanoyl, n-C12:0) --> 1,2-Diacyl-sn-glycerol (didodecanoyl, n-C12:0)</p>
+        </td>
+    </tr><tr>
+        <td><strong>GPR</strong></td><td></td>
+    </tr><tr>
+        <td><strong>Lower bound</strong></td><td>0.0</td>
+    </tr><tr>
+        <td><strong>Upper bound</strong></td><td>1000.0</td>
+    </tr>
+</table><p>Metabolites are accessible through <code class="xref any docutils literal"><span class="pre">model.metabolites</span></code>. For example,
+D-glucose in the cytosolic compartment.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">glc__D_c</span>
+</pre></div>
+</div>
+<table>
+    <tr>
+        <td><strong>Metabolite identifier</strong></td><td>glc__D_c</td>
+    </tr>
+    <tr>
+        <td><strong>Name</strong></td><td>D-Glucose</td>
+    </tr>
+    <tr>
+        <td><strong>Formula</strong></td><td>C6H12O6</td>
+    </tr>
+</table><p>And it is easy to find the associated reactions</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">glc__D_c</span><span class="o">.</span><span class="n">reactions</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">frozenset</span><span class="p">({</span><span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">MLTG1</span> <span class="n">at</span> <span class="mh">0x1163779b0</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">MLTG2</span> <span class="n">at</span> <span class="mh">0x1163779e8</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">TRE6PH</span> <span class="n">at</span> <span class="mh">0x116557ac8</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">G6PP</span> <span class="n">at</span> <span class="mh">0x116206b00</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">MLTG3</span> <span class="n">at</span> <span class="mh">0x116377ba8</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">GLCabcpp</span> <span class="n">at</span> <span class="mh">0x11623f3c8</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">MLTG4</span> <span class="n">at</span> <span class="mh">0x116377c18</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">AMALT2</span> <span class="n">at</span> <span class="mh">0x11605b438</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">GLCt2pp</span> <span class="n">at</span> <span class="mh">0x11623f470</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">MLTG5</span> <span class="n">at</span> <span class="mh">0x116377c88</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">TREH</span> <span class="n">at</span> <span class="mh">0x116557d30</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">AMALT1</span> <span class="n">at</span> <span class="mh">0x11605b588</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">AMALT3</span> <span class="n">at</span> <span class="mh">0x11605b6a0</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">GLCATr</span> <span class="n">at</span> <span class="mh">0x1162336a0</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">AMALT4</span> <span class="n">at</span> <span class="mh">0x11605b710</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">XYLI2</span> <span class="n">at</span> <span class="mh">0x1165a1f28</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">HEX1</span> <span class="n">at</span> <span class="mh">0x1162a7748</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">LACZ</span> <span class="n">at</span> <span class="mh">0x1162f0f98</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">GALS3</span> <span class="n">at</span> <span class="mh">0x1162157f0</span><span class="o">&gt;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>A list of the genes encoded in the model can be accessed via
+<code class="xref any docutils literal"><span class="pre">model.genes</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">genes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b2215</span> <span class="n">at</span> <span class="mh">0x10c6f3780</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b1377</span> <span class="n">at</span> <span class="mh">0x10950b4e0</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0241</span> <span class="n">at</span> <span class="mh">0x109351be0</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0929</span> <span class="n">at</span> <span class="mh">0x109351048</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4035</span> <span class="n">at</span> <span class="mh">0x109351d68</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4033</span> <span class="n">at</span> <span class="mh">0x109344b38</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4034</span> <span class="n">at</span> <span class="mh">0x115e60518</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4032</span> <span class="n">at</span> <span class="mh">0x115e60550</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4036</span> <span class="n">at</span> <span class="mh">0x115e60588</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4213</span> <span class="n">at</span> <span class="mh">0x115e605c0</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>A few additional attributes have been added that are not available in a
+<a class="reference external" href="https://opencobra.github.io/cobrapy/">cobrapy</a> model. For example,
+exchange reactions that allow certain metabolites to enter or leave the
+model can be accessed through <code class="xref any docutils literal"><span class="pre">model.exchanges</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">exchanges</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_4crsol_c</span> <span class="n">at</span> <span class="mh">0x115f44390</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_5drib_c</span> <span class="n">at</span> <span class="mh">0x115f443c8</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_aacald_c</span> <span class="n">at</span> <span class="mh">0x115f44400</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_amob_c</span> <span class="n">at</span> <span class="mh">0x115f44438</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_mththf_c</span> <span class="n">at</span> <span class="mh">0x115f44470</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_oxam_c</span> <span class="n">at</span> <span class="mh">0x115f444a8</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_12ppd__R_e</span> <span class="n">at</span> <span class="mh">0x115f44550</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_12ppd__S_e</span> <span class="n">at</span> <span class="mh">0x115f44588</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_14glucan_e</span> <span class="n">at</span> <span class="mh">0x115f445c0</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_15dap_e</span> <span class="n">at</span> <span class="mh">0x115f445f8</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Or, the current medium can be accessed through <code class="xref any docutils literal"><span class="pre">model.medium</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">medium</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>bound</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>EX_ca2_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_cbl1_e</th>
+      <td>0.01</td>
+    </tr>
+    <tr>
+      <th>EX_cl_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_co2_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_cobalt2_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>EX_sel_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_slnt_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_so4_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_tungs_e</th>
+      <td>1000.00</td>
+    </tr>
+    <tr>
+      <th>EX_zn2_e</th>
+      <td>1000.00</td>
+    </tr>
+  </tbody>
+</table>
+<p>25 rows × 1 columns</p>
+</div><p>It is also possible to get a list of essential reactions …</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">find_essential_reactions</span>
+<span class="n">find_essential_reactions</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_4crsol_c</span> <span class="n">at</span> <span class="mh">0x115f44390</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_5drib_c</span> <span class="n">at</span> <span class="mh">0x115f443c8</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_amob_c</span> <span class="n">at</span> <span class="mh">0x115f44438</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">DM_mththf_c</span> <span class="n">at</span> <span class="mh">0x115f44470</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">BIOMASS_Ec_iJO1366_core_53p95M</span> <span class="n">at</span> <span class="mh">0x115f44518</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_ca2_e</span> <span class="n">at</span> <span class="mh">0x115f5c3c8</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_cl_e</span> <span class="n">at</span> <span class="mh">0x115f5c588</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_cobalt2_e</span> <span class="n">at</span> <span class="mh">0x115f5c668</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_cu2_e</span> <span class="n">at</span> <span class="mh">0x115f5c860</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Reaction</span> <span class="n">EX_glc__D_e</span> <span class="n">at</span> <span class="mh">0x115f697b8</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>… and essential genes.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">find_essential_genes</span>
+<span class="n">find_essential_genes</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4245</span> <span class="n">at</span> <span class="mh">0x115e90048</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0109</span> <span class="n">at</span> <span class="mh">0x115f08080</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b2838</span> <span class="n">at</span> <span class="mh">0x115ea80f0</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0423</span> <span class="n">at</span> <span class="mh">0x115f380f0</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b2574</span> <span class="n">at</span> <span class="mh">0x115e90128</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b3809</span> <span class="n">at</span> <span class="mh">0x115ea8128</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b4407</span> <span class="n">at</span> <span class="mh">0x115f38128</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0175</span> <span class="n">at</span> <span class="mh">0x115ea8160</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b3992</span> <span class="n">at</span> <span class="mh">0x115f38160</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Gene</span> <span class="n">b0928</span> <span class="n">at</span> <span class="mh">0x115e90198</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Docs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/01-quick-start.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
